@@ -16,13 +16,19 @@ const useStyles = makeStyles({
 
 function App() {
   const [jokes, setJokes] = useState([])
+  const [favouriteJokes, setFavouriteJokes] = useState([])
   const classes = useStyles();
   
-const fetchData = () => {
+  const fetchData = () => {
     fetch('http://api.icndb.com/jokes/random/10')
       .then(res => res.json())
       .then(res => setJokes(res.value))
       .catch((err) => console.log(err))
+  }
+  const setFavourite = (id) => {
+    if(favouriteJokes.length > 9 || favouriteJokes.find((joke) => joke.id === id)) return;
+    const favouriteJoke = jokes.find((joke) => joke.id === id);
+    setFavouriteJokes([favouriteJoke, ...favouriteJokes])
   }
 
   return (
@@ -42,7 +48,7 @@ const fetchData = () => {
               <Typography>{joke.joke}</Typography>
             </CardContent>
             <CardActions>
-              <Button variant='contained' size='small' color='primary'>Like</Button>
+              <Button variant='contained' size='small' color='primary' onClick={() => setFavourite(joke.id)}>Like</Button>
             </CardActions>
           </Card>
         ))}
