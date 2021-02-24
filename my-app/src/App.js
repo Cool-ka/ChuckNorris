@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Box, Card, CardContent, CssBaseline, Container, Typography } from '@material-ui/core';
+import { Button, Box, Card, CardActions, CardContent, CssBaseline, Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles({
@@ -41,6 +41,9 @@ const fetchData = () => {
             <CardContent className={classes.cardContent}>
               <Typography>{joke.joke}</Typography>
             </CardContent>
+            <CardActions>
+              <Button variant='contained' size='small' color='primary'>Like</Button>
+            </CardActions>
           </Card>
         ))}
       </Container>
