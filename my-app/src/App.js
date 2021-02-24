@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppBar, Button, Box, Card, CardActions, CardContent, CssBaseline, Container, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -19,8 +19,9 @@ const useStyles = makeStyles({
 })
 
 function App() {
+  const initialFavouriteJokes = () =>  JSON.parse(window.localStorage.getItem('favouriteJokes')) || []
   const [jokes, setJokes] = useState([])
-  const [favouriteJokes, setFavouriteJokes] = useState([])
+  const [favouriteJokes, setFavouriteJokes] = useState(initialFavouriteJokes)
   const [currentTab, setCurrentTab] = useState(0)
   const classes = useStyles();
   
@@ -44,6 +45,11 @@ function App() {
   const changeTabs = (event, value) => {
     setCurrentTab(value)
   }
+
+  useEffect(() => {
+    window.localStorage.setItem('favouriteJokes', JSON.stringify(favouriteJokes))
+  }, [favouriteJokes])
+
 
   return (
     <div className="App">
