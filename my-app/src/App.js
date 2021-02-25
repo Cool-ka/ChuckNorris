@@ -99,21 +99,21 @@ function App() {
         </Typography>
         <AppBar className={classes.appBar}>
           <Tabs value={currentTab} onChange={changeTabs} centered>
-            <Tab label='Index' id='index-tab' aria-controls='index-panel'/>
-            <Tab label='Favourite' id='favourite-tab' aria-controls='favourite-panel'/>
+            <Tab data-cy="tabIndex" label='Index' id='index-tab' aria-controls='index-panel'/>
+            <Tab data-cy="tabFavourite" label='Favourite' id='favourite-tab' aria-controls='favourite-panel'/>
           </Tabs>
         </AppBar>
         <div role='tabpanel' hidden={currentTab !== 0}>
           <Box display='flex' justifyContent='center' className={classes.box}>
-            <Button variant='outlined' color='primary' onClick={fetchData}>Fetch data</Button>
+            <Button data-cy="fetchButton" variant='outlined' color='primary' onClick={fetchData}>Fetch data</Button>
           </Box>
           {jokes.map(joke => (
-            <Card key={joke.id} className={classes.card}>
+            <Card data-cy="jokeCard" key={joke.id} className={classes.card}>
               <CardContent className={classes.cardContent}>
                 <Typography>{joke.joke}</Typography>
               </CardContent>
               <CardActions>
-                <Button variant='contained' size='small' color='primary' onClick={() => setFavourite(joke.id)}>Like</Button>
+                <Button data-cy="likeButton" variant='contained' size='small' color='primary' onClick={() => setFavourite(joke.id)}>Like</Button>
               </CardActions>
             </Card>
           ))}
@@ -121,15 +121,15 @@ function App() {
         <div role='tabpanel' hidden={currentTab !== 1}>
           <Typography variant='h4' align='center'>Favourite jokes</Typography>
           <Box display='flex' justifyContent='center' className={classes.box}>
-            <Button variant='outlined' color='primary' onClick={fetchRandomJokes}>Fetch random jokes</Button>
+            <Button data-cy="fetchRandomJokeButton" variant='outlined' color='primary' onClick={fetchRandomJokes}>Fetch random jokes</Button>
           </Box>
           {favouriteJokes.map(joke => (
-            <Card key={`${joke.id}-favourite`} className={classes.card}>
+            <Card data-cy="favouriteJokeCard" key={`${joke.id}-favourite`} className={classes.card}>
               <CardContent className={classes.cardContent}>
                 <Typography>{joke.joke}</Typography>
               </CardContent>
               <CardActions>
-                <Button variant='contained' size='small' color='default' onClick={() => unlike(joke.id)}>Unlike</Button>
+                <Button data-cy="unlikeButton" variant='contained' size='small' color='default' onClick={() => unlike(joke.id)}>Unlike</Button>
               </CardActions>
             </Card>
           ))}
