@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AppBar, Button, Box, Card, CardActions, CardContent, CssBaseline, Container, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
+import { getFavouriteJoke } from './utils/functions'
 
 const useStyles = makeStyles({
   appBar: {
@@ -50,13 +51,11 @@ function App() {
   }
 
   const setFavourite = (id) => {
-    // checks if no more than 10 jokes or if jokes already exists
-    if(favouriteJokes.length > 9 || favouriteJokes.find((joke) => joke.id === id)) return;
-    // finds the joke
-    const favouriteJoke = jokes.find((joke) => joke.id === id);
+    // checks if no more than 10 jokes or if joke already exists in favouriteJokes, if not then returns the joke by given id
+    const favouriteJoke = getFavouriteJoke(jokes, favouriteJokes, id);
     // sets the joke in favouriteJoke state
-    setFavouriteJokes([favouriteJoke, ...favouriteJokes]);
-  }
+    if (favouriteJoke) setFavouriteJokes([favouriteJoke, ...favouriteJokes])
+   }
 
   const unlike = (id) => {
     // updates the facouriteJoke state to array without unliked joke
