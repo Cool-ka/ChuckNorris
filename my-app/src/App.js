@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { AppBar, Button, Box, Card, CardActions, CardContent, CssBaseline, Container, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -23,14 +23,53 @@ function App() {
   const [jokes, setJokes] = useState([])
   const [favouriteJokes, setFavouriteJokes] = useState(initialFavouriteJokes)
   const [currentTab, setCurrentTab] = useState(0)
+  const [buttonValue, setButtonValue] = useState(false)
+  const [intervalId, setIntervalId] = useState(null)
+  const [changeInInterval, setChangeInInterval] = useState(false)
   const classes = useStyles();
-  
+  const stateRef = useRef();
+  const toggle = useRef()
+  toggle.current = buttonValue;
+  stateRef.current = favouriteJokes;
+
   const fetchData = () => {
     fetch('http://api.icndb.com/jokes/random/10')
       .then(res => res.json())
       .then(res => setJokes(res.value))
       .catch((err) => console.log(err))
   }
+
+  useEffect(() => {
+    if(stateRef.current.length > 9) return;
+    if(buttonValue) {
+      const interval = setInterval(() => {
+        setChangeInInterval(true)
+        setIntervalId(interval)
+        fetch('http://api.icndb.com/jokes/random/1')
+          .then(res => res.json())
+          .then(res => setFavouriteJokes(favouriteJokes => ([...res.value, ...favouriteJokes])))
+          if(stateRef.current.length > 8) {
+            setChangeInInterval(false)
+            setButtonValue(!toggle.current)
+          }
+      }, 5000)
+    }
+    if(!buttonValue ) {
+      setChangeInInterval(false)
+    }
+  }, [buttonValue])
+
+  useEffect(() => {
+    if(!changeInInterval) {
+      clearInterval(intervalId)
+      setIntervalId(null)
+    }
+  }, [changeInInterval, intervalId])
+
+  const fetchRandomJokes = () => {
+    setButtonValue(!toggle.current)
+  }
+
   const setFavourite = (id) => {
     if(favouriteJokes.length > 9 || favouriteJokes.find((joke) => joke.id === id)) return;
     const favouriteJoke = jokes.find((joke) => joke.id === id);
@@ -65,9 +104,9 @@ function App() {
           </Tabs>
         </AppBar>
         <div role='tabpanel' hidden={currentTab !== 0}>
-        <Box display='flex' justifyContent='center' className={classes.box}>
-          <Button variant='outlined' color='primary' onClick={fetchData}>Fetch data</Button>
-        </Box>
+          <Box display='flex' justifyContent='center' className={classes.box}>
+            <Button variant='outlined' color='primary' onClick={fetchData}>Fetch data</Button>
+          </Box>
           {jokes.map(joke => (
             <Card key={joke.id} className={classes.card}>
               <CardContent className={classes.cardContent}>
@@ -81,8 +120,11 @@ function App() {
         </div>
         <div role='tabpanel' hidden={currentTab !== 1}>
           <Typography variant='h4' align='center'>Favourite jokes</Typography>
+          <Box display='flex' justifyContent='center' className={classes.box}>
+            <Button variant='outlined' color='primary' onClick={fetchRandomJokes}>Fetch random jokes</Button>
+          </Box>
           {favouriteJokes.map(joke => (
-            <Card key={joke.id} className={classes.card}>
+            <Card key={`${joke.id}-favourite`} className={classes.card}>
               <CardContent className={classes.cardContent}>
                 <Typography>{joke.joke}</Typography>
               </CardContent>
@@ -91,7 +133,7 @@ function App() {
               </CardActions>
             </Card>
           ))}
-        </div>        
+        </div>
       </Container>
     </div>
   );
